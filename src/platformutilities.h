@@ -20,7 +20,8 @@
 #define PLATFORMUTILITIES_H
 
 #include <QObject>
-#include "picturesource.h"
+
+class PictureSource;
 
 class PlatformUtilities : public QObject
 {
