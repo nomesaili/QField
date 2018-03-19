@@ -63,3 +63,8 @@ void PlatformUtilities::open( const QString& data, const QString& type )
   Q_UNUSED( type )
 }
 
+ProjectSource *PlatformUtilities::openProject()
+{
+  return nullptr;
+}
+

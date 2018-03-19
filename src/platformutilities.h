@@ -22,6 +22,7 @@
 #include <QObject>
 
 class PictureSource;
+class ProjectSource;
 
 class PlatformUtilities : public QObject
 {
@@ -48,5 +49,6 @@ class PlatformUtilities : public QObject
 
     Q_INVOKABLE virtual void open( const QString& data, const QString& type );
 
+    Q_INVOKABLE virtual ProjectSource *openProject();
 };
 #endif // PLATFORMUTILITIES_H
