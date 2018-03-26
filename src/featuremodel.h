@@ -108,9 +108,9 @@ class FeatureModel : public QAbstractListModel
     bool commit();
     bool startEditing();
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QgsFeature mFeature;
-    Geometry* mGeometry;
+    Geometry* mGeometry = nullptr;
     QVector<bool> mRememberedAttributes;
     std::unique_ptr<QGeoPositionInfoSource> mPositionSource;
     QString mTempName;
