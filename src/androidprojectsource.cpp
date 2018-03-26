@@ -16,7 +16,7 @@
 
 
 #include "androidprojectsource.h"
-#include <QDebug>
+#include "androidutils.h"
 
 AndroidProjectSource::AndroidProjectSource()
   : ProjectSource( nullptr )
@@ -30,19 +30,8 @@ void AndroidProjectSource::handleActivityResult( int receiverRequestCode, int re
   if ( receiverRequestCode == 103 && resultCode == RESULT_OK )
   {
     QAndroidJniObject uri = data.callObjectMethod( "getData", "()Landroid/net/Uri;" );
-    QAndroidJniObject path = uri.callObjectMethod( "getPath", "()Ljava/lang/String;" );
-    QAndroidJniObject file = QAndroidJniObject( "java/io/File", "(Ljava/lang/String;)V", path.object<jstring>() );
-    QString absolutePath = file.callObjectMethod( "getAbsolutePath", "()Ljava/lang/String;" ).toString();
 
-    if ( absolutePath.startsWith( QStringLiteral( "/document/primary:" ) ) )
-    {
-      QAndroidJniObject extStorage = QAndroidJniObject::callStaticObjectMethod( "android/os/Environment", "getExternalStorageDirectory", "()Ljava/io/File;" );
-      QString extStoragePath = extStorage.callObjectMethod( "getAbsolutePath", "()Ljava/lang/String;" ).toString();
-
-      extStoragePath += '/';
-
-      absolutePath.replace( QStringLiteral( "/document/primary:" ), extStoragePath );
-    }
+    QString absolutePath = AndroidUtils::uriToPath( uri );
 
     emit projectOpened( absolutePath );
   }

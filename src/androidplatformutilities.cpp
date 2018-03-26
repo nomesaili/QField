@@ -25,6 +25,11 @@
 #include <QtAndroid>
 #include <QDebug>
 #include <QAndroidJniEnvironment>
+#include <QDateTime>
+#include <QDir>
+#include <qgsapplication.h>
+#include <qgsmessagelog.h>
+
 
 AndroidPlatformUtilities::AndroidPlatformUtilities()
 {
@@ -98,11 +103,45 @@ PictureSource* AndroidPlatformUtilities::getPicture( const QString& prefix )
 
   QAndroidJniObject intent = QAndroidJniObject( "android/content/Intent", "(Ljava/lang/String;)V", actionImageCapture.object<jstring>() );
 
+  if ( !QDir::root().mkpath( prefix ) )
+  {
+    QgsApplication::messageLog()->logMessage( tr( "Could not create folder %1" ).arg( prefix ), "QField", Qgis::Critical );
+    return nullptr;
+  }
+
+  QString filename = QDateTime().toString() + QStringLiteral(".jpg");
+
+  qWarning() << "1";
+  QAndroidJniObject storageDir = QAndroidJniObject( "java/io/File", "(Ljava/lang/String;)V", QAndroidJniObject::fromString( prefix ).object<jstring>() );
+  qWarning() << "2";
+  QAndroidJniObject image = QAndroidJniObject::callStaticObjectMethod( "java/io/File", "createTempFile",
+                                                                       "(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)Ljava/io/File;",
+                                                                       QAndroidJniObject::fromString( filename ).object<jstring>(),
+                                                                       QAndroidJniObject::fromString( QStringLiteral(".jpg") ).object<jstring>(),
+                                                                       storageDir.object<jobject>() );
+
+  qWarning() << "3";
+  QString imagePath = image.callObjectMethod( "getAbsolutePath", "()Ljava/lang/String;" ).toString();
+
+  qWarning() << "4";
+  QAndroidJniObject photoURI = QAndroidJniObject::callStaticObjectMethod( "android/support/v4/content/FileProvider", "getUriForFile",
+                                                                          "(Landroid/content/Context;Ljava/lang/String;Ljava/io/File;)Landroid/net/Uri;",
+                                                                          QtAndroid::androidActivity().object(),
+                                                                          QAndroidJniObject::fromString( QStringLiteral("com.example.android.fileprovider")).object<jstring>(),
+                                                                          image.object()
+                                                                          );
+  qWarning() << "5";
+  QAndroidJniObject extraOutput = QAndroidJniObject::getStaticObjectField( "android/provider/MediaStore", "EXTRA_OUTPUT", "Ljava/lang/String;" );
+
+  qWarning() << "6";
+  intent.callObjectMethod( "putExtra", "(Ljava/lang/String;Landroid/os/Parcelable)Landroid/content/Intent;", extraOutput.object<jstring>(), photoURI.object<jobject>() );
+
+  qWarning() << "7";
   AndroidPictureSource* pictureSource = nullptr;
 
   if ( actionImageCapture.isValid() && intent.isValid() )
   {
-    pictureSource = new AndroidPictureSource( prefix );
+    pictureSource = new AndroidPictureSource( imagePath );
     QtAndroid::startActivity( intent.object<jobject>(), 101, pictureSource );
   }
   else

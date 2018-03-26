@@ -26,13 +26,13 @@ class AndroidPictureSource : public PictureSource, public QAndroidActivityResult
     Q_OBJECT
 
   public:
-    AndroidPictureSource( const QString& prefix );
+    AndroidPictureSource( const QString& filePath );
 
     //! QAndroidActivityResultReceiver
     void handleActivityResult( int receiverRequestCode, int resultCode, const QAndroidJniObject& data ) override;
 
   private:
-    QString mPrefix;
+    QString mFilePath;
 };
 
 #endif // ANDROIDPICTURESOURCE_H

@@ -57,7 +57,8 @@ HEADERS += \
     distancearea.h \
     coordinatetransformer.h \
     expressioncontextutils.h \
-    projectsource.h
+    projectsource.h \
+    androidutils.h
 
 SOURCES += \
     appinterface.cpp \
@@ -97,7 +98,8 @@ SOURCES += \
     distancearea.cpp \
     coordinatetransformer.cpp \
     expressioncontextutils.cpp \
-    projectsource.cpp
+    projectsource.cpp \
+    androidutils.cpp
 
 INCLUDEPATH += ../3rdparty/tessellate
 LIBS += ../3rdparty/tessellate/libtessellate.a
