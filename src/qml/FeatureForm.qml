@@ -241,6 +241,8 @@ Page {
           property var config: ( EditorWidgetConfig || {} )
           property var widget: EditorWidget
           property var field: Field
+          property var fieldType: FieldType
+          property var relationId: RelationId
           property var constraintValid: ConstraintValid
 
           active: widget !== 'Hidden'
