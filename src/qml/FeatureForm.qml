@@ -193,7 +193,7 @@ Page {
 
     Item {
       id: fieldContainer
-      visible: Type === 'field'
+      visible: Type === 'field' || Type === 'relation'
       height: childrenRect.height
 
       anchors {
