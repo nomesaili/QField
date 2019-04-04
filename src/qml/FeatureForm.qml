@@ -320,8 +320,11 @@ Page {
     parent.focus = true
     aboutToSave()
 
-    if ( form.state === 'Add' && !buffered ) {
-      model.create()
+    if ( form.state === 'Add' ) {
+      if( !buffered )
+        model.create()
+      else
+        model.save()
       state = 'Edit'
     }
     else
@@ -336,12 +339,12 @@ Page {
       aboutToSave() //used the same way like on save
 
       if ( form.state === 'Add' && !buffered ) {
-        //model.create()
+        model.create()
         buffered = true
       }
       else
       {
-      //  model.save()
+        model.save()
       }
 
       //evtl. buffered()
