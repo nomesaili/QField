@@ -429,3 +429,8 @@ void AttributeFormModelBase::create()
 {
   mFeatureModel->create();
 }
+
+void AttributeFormModelBase::deleteFeature()
+{
+  mFeatureModel->deleteFeature();
+}
